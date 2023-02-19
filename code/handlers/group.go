@@ -37,9 +37,35 @@ func (p GroupMessageHandler) handle(ctx context.Context, event *larkim.P2Message
 		return nil
 	}
 
-	if qParsed == "/clear" || qParsed == "清除" {
+	if qParsed == " /clear" || qParsed == " 清除" {
 		p.userCache.Clear(*openId)
 		sendMsg(ctx, "🤖️：AI机器人已清除记忆", chatId)
+		return nil
+	}
+
+	s := string([]rune(qParsed)[:4])
+	if s == " 画图：" {
+		qParsed2 := string([]rune(qParsed[4:]))
+		images, err := services.Images(qParsed2)
+		ok := true
+		if err != nil {
+			sendMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), chatId)
+			return nil
+		}
+		if len(images) == 0 {
+			ok = false
+		}
+		if ok {
+			p.userCache.Set(*openId, qParsed, "")
+			sendMsg(ctx, "画了2张图:", chatId)
+			for _, image := range images {
+				err := sendMsg(ctx, image, chatId)
+				if err != nil {
+					sendMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), chatId)
+					return nil
+				}
+			}
+		}
 		return nil
 	}
 
