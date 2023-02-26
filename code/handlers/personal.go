@@ -68,7 +68,11 @@ func (p PersonalMessageHandler) handle(ctx context.Context, event *larkim.P2Mess
 	completions, err := services.Completions(prompt)
 	ok := true
 	if err != nil {
-		sendMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), chatId)
+		if err.Error() == "gtp api 429 Too Many Requests" {
+			sendMsg(ctx, fmt.Sprintf("🤖️：抱歉，账号次数受限，正在升级，请稍后再试～\n错误信息: %v", err), chatId)
+		} else {
+			sendMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), chatId)
+		}
 		return nil
 	}
 	if len(completions) == 0 {

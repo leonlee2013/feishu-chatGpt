@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
+	"os"
 	"start-feishubot/handlers"
 	"start-feishubot/initialization"
 
@@ -20,6 +23,16 @@ func init() {
 }
 
 func main() {
+	f, err := os.OpenFile("/home/ly/chatgpt.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return
+	}
+	defer func() {
+		f.Close()
+	}()
+	// 组合一下即可，os.Stdout代表标准输出流
+	multiWriter := io.MultiWriter(os.Stdout, f)
+	log.SetOutput(multiWriter)
 
 	handler := dispatcher.NewEventDispatcher(viper.GetString(
 		"APP_VERIFICATION_TOKEN"), viper.GetString("APP_ENCRYPT_KEY")).

@@ -134,7 +134,7 @@ func Images(msg string) ([]string, error) {
 		// MaxTokens:        maxTokens,
 		// Temperature:      temperature,
 		N:    2,
-		Size: "1024x1024",
+		Size: "512x512",
 		// TopP:             1,
 		// FrequencyPenalty: 0,
 		// PresencePenalty:  0,

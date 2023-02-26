@@ -74,7 +74,11 @@ func (p GroupMessageHandler) handle(ctx context.Context, event *larkim.P2Message
 	completions, err := services.Completions(prompt)
 	ok := true
 	if err != nil {
-		replyMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), msgId)
+		if err.Error() == "gtp api 429 Too Many Requests" {
+			replyMsg(ctx, fmt.Sprintf("🤖️：抱歉,账号次数受限，正在升级，请稍后再试～\n错误信息: %v", err), msgId)
+		} else {
+			replyMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), msgId)
+		}
 		return nil
 	}
 	if len(completions) == 0 {
