@@ -1,18 +1,53 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
-	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
+	"log"
 	"regexp"
 	"start-feishubot/initialization"
 	"strings"
+
+	"github.com/google/uuid"
+	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
+	"go.uber.org/atomic"
 )
 
+var is_api_key = atomic.NewBool(false)
+
+func helpText() string {
+	var buffer bytes.Buffer
+	buffer.WriteString("!help  - 帮助\n")
+	buffer.WriteString("!reset - 重置上下文\n")
+	buffer.WriteString("!info  - 信息（包括接入方式）\n")
+	buffer.WriteString("!draw:+<prompt> - DALL·E画图")
+	ret := buffer.String()
+	log.Println(ret)
+	return ret
+}
+
+func infoText() string {
+	var buffer bytes.Buffer
+	if is_api_key.Load() {
+		buffer.WriteString("接入方式：ChatGPTAPI Key接入\n")
+		buffer.WriteString("优点：响应快, 稳定\n")
+		buffer.WriteString("缺点：收费，质量不如网页版\n")
+		buffer.WriteString("其他：当网页版被限流时使用\n")
+	} else {
+		buffer.WriteString("接入方式：ChatGPT Browser接入\n")
+		buffer.WriteString("优点：网页版，真实的ChatGPT\n")
+		buffer.WriteString("缺点：响应慢, 不稳定，经常被限流\n")
+		buffer.WriteString("其他：被限流时，会切换到API Key")
+	}
+	ret := buffer.String()
+	log.Println(ret)
+	return ret
+}
+
 func replyMsg(ctx context.Context, msg string, msgId *string) error {
-	fmt.Println("sendMsg", msg, msgId)
+	fmt.Println("group-->", msgId)
 	msg, i := processMessage(msg)
 	if i != nil {
 		return i
@@ -43,11 +78,10 @@ func replyMsg(ctx context.Context, msg string, msgId *string) error {
 		return err
 	}
 	return nil
-	return nil
 
 }
 func sendMsg(ctx context.Context, msg string, chatId *string) error {
-	//fmt.Println("sendMsg", msg, chatId)
+	fmt.Println("persional-->", chatId)
 	msg, i := processMessage(msg)
 	if i != nil {
 		return i

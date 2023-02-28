@@ -133,7 +133,7 @@ func Images(msg string) ([]string, error) {
 		Prompt: msg,
 		// MaxTokens:        maxTokens,
 		// Temperature:      temperature,
-		N:    2,
+		N:    1,
 		Size: "512x512",
 		// TopP:             1,
 		// FrequencyPenalty: 0,

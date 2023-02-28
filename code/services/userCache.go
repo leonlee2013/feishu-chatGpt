@@ -2,8 +2,9 @@ package services
 
 import (
 	"fmt"
-	"github.com/patrickmn/go-cache"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 )
 
 type UserService struct {
@@ -54,6 +55,11 @@ func (u UserService) Set(userId string, question, reply string) {
 	u.cache.Set(userId, listOut, maxCacheTime)
 }
 
+func (u UserService) Replace(userId, reply string) {
+	maxCacheTime := time.Minute * 30
+	u.cache.Set(userId, []string{reply}, maxCacheTime)
+}
+
 func (u UserService) Clear(userId string) bool {
 	u.cache.Delete(userId)
 	return true
@@ -62,6 +68,7 @@ func (u UserService) Clear(userId string) bool {
 type UserCacheInterface interface {
 	Get(userId string) string
 	Set(userId string, question, reply string)
+	Replace(userId string, reply string)
 	Clear(userId string) bool
 }
 

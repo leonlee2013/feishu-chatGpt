@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"log"
 	"start-feishubot/services"
 
 	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
@@ -37,66 +38,81 @@ func (p GroupMessageHandler) handle(ctx context.Context, event *larkim.P2Message
 		return nil
 	}
 
-	if qParsed == " /clear" || qParsed == " 清除" {
-		p.userCache.Clear(*openId)
-		sendMsg(ctx, "🤖️：AI机器人已清除记忆", chatId)
-		return nil
-	}
-
-	s := string([]rune(qParsed)[:4])
-	if s == " 画图：" {
-		qParsed2 := string([]rune(qParsed[4:]))
-		images, err := services.Images(qParsed2)
-		ok := true
-		if err != nil {
-			sendMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), chatId)
+	//-------------------------------------------------------------
+	if qParsed[:2] == " !" {
+		cmd := qParsed[2:]
+		switch cmd {
+		case "help":
+			// sendMsg(ctx, helpText(), chatId)
+			replyMsg(ctx, helpText(), msgId)
 			return nil
-		}
-		if len(images) == 0 {
-			ok = false
-		}
-		if ok {
-			p.userCache.Set(*openId, qParsed, "")
-			sendMsg(ctx, "画了2张图:", chatId)
-			for _, image := range images {
-				err := sendMsg(ctx, image, chatId)
+		case "reset":
+			p.userCache.Clear(*openId)
+			// sendMsg(ctx, "🤖️：ChatGPT上下文已重置", chatId)
+			replyMsg(ctx, "🤖️：ChatGPT上下文已重置", msgId)
+			return nil
+		case "info":
+			// sendMsg(ctx, infoText(), chatId)
+			replyMsg(ctx, infoText(), msgId)
+			return nil
+		default:
+			if cmd[:5] == "draw:" {
+				qParsed2 := cmd[5:]
+				images, err := services.Images(qParsed2)
 				if err != nil {
-					sendMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), chatId)
+					// sendErrorMsg(ctx, err, chatId)
+					replyErrorMsg(ctx, err, msgId)
 					return nil
 				}
+				for _, image := range images {
+					err := sendMsg(ctx, image, chatId)
+					if err != nil {
+						// sendErrorMsg(ctx, err, chatId)
+						replyErrorMsg(ctx, err, msgId)
+						return nil
+					}
+				}
+				return nil
 			}
 		}
-		return nil
 	}
-
 	prompt := p.userCache.Get(*openId)
-	prompt = fmt.Sprintf("%s\nQ:%s\nA:", prompt, qParsed)
-	completions, err := services.Completions(prompt)
-	ok := true
-	if err != nil {
-		if err.Error() == "gtp api 429 Too Many Requests" {
-			replyMsg(ctx, fmt.Sprintf("🤖️：抱歉,账号次数受限，正在升级，请稍后再试～\n错误信息: %v", err), msgId)
-		} else {
-			replyMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), msgId)
-		}
-		return nil
-	}
-	if len(completions) == 0 {
-		ok = false
-	}
-	if ok {
-		p.userCache.Set(*openId, qParsed, completions)
-		err := replyMsg(ctx, completions, msgId)
+
+	if is_api_key.Load() {
+		prompt = fmt.Sprintf("%s\nQ:%s\nA:", prompt, qParsed)
+		completions, err := services.Completions(prompt)
 		if err != nil {
-			replyMsg(ctx, fmt.Sprintf("🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), msgId)
+			replyErrorMsg(ctx, err, msgId)
+			return nil
+		}
+		p.userCache.Set(*openId, qParsed, completions)
+		err = replyMsg(ctx, completions, msgId)
+		if err != nil {
+			replyErrorMsg(ctx, err, msgId)
+			return nil
+		}
+	} else {
+		completions, newReply, err := services.HttpPostJson(qParsed, prompt)
+		if err != nil {
+			replyErrorMsg(ctx, err, msgId)
+			return nil
+		}
+		p.userCache.Replace(*openId, newReply)
+		err = replyMsg(ctx, completions, msgId)
+		if err != nil {
+			replyErrorMsg(ctx, err, msgId)
 			return nil
 		}
 	}
 	return nil
-
 }
 
 var _ MessageHandlerInterface = (*PersonalMessageHandler)(nil)
+
+func replyErrorMsg(ctx context.Context, err error, msgId *string) {
+	log.Printf("replyErrorMsg:%v msgId: %v", err, *msgId)
+	replyMsg(ctx, fmt.Sprintf("🤖️：消息机器人出错，请稍后再试～\n错误信息: %v", err), msgId)
+}
 
 func NewGroupMessageHandler() MessageHandlerInterface {
 	return &GroupMessageHandler{

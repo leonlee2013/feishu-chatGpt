@@ -44,7 +44,6 @@ func Handler(ctx context.Context, event *larkim.P2MessageReceiveV1) error {
 
 func judgeChatType(event *larkim.P2MessageReceiveV1) HandlerType {
 	chatType := event.Event.Message.ChatType
-	fmt.Printf("chatType: %v", *chatType)
 	if *chatType == "group" {
 		return GroupHandler
 	}
