@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
+	"go.uber.org/atomic"
 )
 
 const (
@@ -72,6 +73,20 @@ type ChatGPTImageRequestBody struct {
 	// TopP             int     `json:"top_p"`
 	// FrequencyPenalty int     `json:"frequency_penalty"`
 	// PresencePenalty  int     `json:"presence_penalty"`
+}
+
+var is_api_key = atomic.NewBool(false)
+
+func IsAPIKey() bool {
+	return is_api_key.Load()
+}
+
+func SwitchToAPIKey() {
+	is_api_key.CAS(false, true)
+}
+
+func SwitchToBrowser() {
+	is_api_key.CAS(true, false)
 }
 
 func Completions(msg string) (string, error) {

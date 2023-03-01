@@ -8,14 +8,12 @@ import (
 	"log"
 	"regexp"
 	"start-feishubot/initialization"
+	"start-feishubot/services"
 	"strings"
 
 	"github.com/google/uuid"
 	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
-	"go.uber.org/atomic"
 )
-
-var is_api_key = atomic.NewBool(false)
 
 func helpText() string {
 	var buffer bytes.Buffer
@@ -30,7 +28,7 @@ func helpText() string {
 
 func infoText() string {
 	var buffer bytes.Buffer
-	if is_api_key.Load() {
+	if services.IsAPIKey() {
 		buffer.WriteString("接入方式：ChatGPTAPI Key接入\n")
 		buffer.WriteString("优点：响应快, 稳定\n")
 		buffer.WriteString("缺点：收费，质量不如网页版\n")

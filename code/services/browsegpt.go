@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 type ChatGPTBrowseReqBody struct {
@@ -39,7 +40,7 @@ func HttpPostJson(msg, lastReply string) (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	log.Printf("request browse_gtp json string : %v", string(reqData))
+	log.Printf("request browser gtp json string : %v", string(reqData))
 
 	jsonStr := reqData
 	url := "http://localhost:8080/api/v1/ask"
@@ -59,6 +60,12 @@ func HttpPostJson(msg, lastReply string) (string, string, error) {
 	err = json.Unmarshal(body, gptReplyBody)
 	if err != nil {
 		return "", "", err
+	}
+	if resp.StatusCode == 500 {
+		if time.Now().Unix()%2 == 0 {
+			SwitchToAPIKey()
+			log.Printf("request: %v\n===========switch to api key==========", string(reqData))
+		}
 	}
 	if resp.StatusCode/2 != 100 {
 		statuscode := resp.StatusCode

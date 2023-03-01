@@ -47,11 +47,11 @@ func (p PersonalMessageHandler) handle(ctx context.Context, event *larkim.P2Mess
 			return nil
 		case "switch":
 			var text string
-			if is_api_key.Load() {
-				is_api_key.CAS(true, false)
+			if services.IsAPIKey() {
+				services.SwitchToBrowser()
 				text = "ChatGPT从APIKey切换到Browser"
 			} else {
-				is_api_key.CAS(false, true)
+				services.SwitchToAPIKey()
 				text = "ChatGPT从Browser切换到APIKey"
 			}
 			log.Println(text)
@@ -77,7 +77,7 @@ func (p PersonalMessageHandler) handle(ctx context.Context, event *larkim.P2Mess
 		}
 	}
 	prompt := p.userCache.Get(*openId)
-	if is_api_key.Load() {
+	if services.IsAPIKey() {
 		prompt = fmt.Sprintf("%s\nQ:%s\nA:", prompt, qParsed)
 		completions, err := services.Completions(prompt)
 		if err != nil {

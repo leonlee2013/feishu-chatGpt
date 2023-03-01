@@ -11,7 +11,6 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/viper v1.14.0
 	go.uber.org/atomic v1.9.0
-	gopkg.in/Knetic/govaluate.v2 v2.3.0
 )
 
 require (
