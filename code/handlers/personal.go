@@ -78,8 +78,9 @@ func (p PersonalMessageHandler) handle(ctx context.Context, event *larkim.P2Mess
 	}
 	prompt := p.userCache.Get(*openId)
 	if services.IsAPIKey() {
-		prompt = fmt.Sprintf("%s\nQ:%s\nA:", prompt, qParsed)
-		completions, err := services.Completions(prompt)
+		// prompt = fmt.Sprintf("%s\nQ:%s\nA:", prompt, qParsed)
+		// completions, err := services.Completions(prompt)
+		completions, err := services.Chat(prompt, qParsed)
 		if err != nil {
 			sendErrorMsg(ctx, err, chatId)
 			return nil

@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -171,33 +170,22 @@ func Completions(msg string) (string, error) {
 	return reply, nil
 }
 
-func genMessages(msg, ask string) []TurboMessage {
-	ret := []TurboMessage{}
-	qaStrArr := strings.Split(msg, "Q:")
-	for _, qaStr := range qaStrArr[1:] {
-		qa := strings.Split(qaStr, "A:")
-		if len(qa) != 2 {
-			log.Printf("qaStr:%v", qaStr)
-			return []TurboMessage{{"user", ask}}
-		}
-		question := strings.Trim(qa[0], "\n")
-		answer := strings.Trim(qa[1], "\n")
-		if question == "" || answer == "" {
-			log.Printf("question:%v answer:%v", question, answer)
-			return []TurboMessage{{"user", ask}}
-		}
-		ret = append(ret, TurboMessage{Role: "user", Content: question})
-		ret = append(ret, TurboMessage{Role: "assistant", Content: answer})
-	}
-	ret = append(ret, TurboMessage{Role: "user", Content: ask})
-	return ret
+func genMessages(msg string) []TurboMessage {
+	 a := "Q:h1\nA:ils\n\nQ:h2\nA:details?\n\nQ:hi\nA:Hello! How can I assist you today?\n\nQ:hi\nA:\n\nHello! How can I assist you today?\n\nQ:h33\nA:I'm sorry, I don't understand what you're asking. Can you please provide more information or context?\n\n\nQ:hiiiiii\nA:"
+	   s := strings.Split(a, "Q:")
+		   for _, v := range s[1:] { 
+				     aa := strings.Split(v, "A:")
+						     fmt.Printf("aa = %#v\n", aa)
+								     bb := strings.Trim(aa[1], "\n")
+										     fmt.Printf("bb = %#v\n", bb)
+												   }
+
 }
 
 func Chat(msg, ask string) (string, error) {
 	requestBody := ChatGPTTurboRequestBody{
-		Model: "gpt-3.5-turbo",
-		// Messages:         []TurboMessage{{"user", msg}},
-		Messages:         genMessages(msg, ask),
+		Model:            "gpt-3.5-turbo",
+		Messages:         []TurboMessage{{"user", msg}},
 		MaxTokens:        maxTokens,
 		Temperature:      temperature,
 		TopP:             1,

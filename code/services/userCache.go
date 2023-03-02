@@ -49,7 +49,8 @@ func (u UserService) Set(userId string, question, reply string) {
 	}
 
 	//限制对话上下文长度
-	if getStrPoolTotalLength(listOut) > maxLength {
+	// if getStrPoolTotalLength(listOut) > maxLength {
+	for getStrPoolTotalLength(listOut) > maxLength {
 		listOut = listOut[1:]
 	}
 	u.cache.Set(userId, listOut, maxCacheTime)

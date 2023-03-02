@@ -30,8 +30,9 @@ func infoText() string {
 	var buffer bytes.Buffer
 	if services.IsAPIKey() {
 		buffer.WriteString("接入方式：ChatGPTAPI Key接入\n")
+		buffer.WriteString("模型：最新的gpt-3.5-turbo\n")
 		buffer.WriteString("优点：响应快, 稳定\n")
-		buffer.WriteString("缺点：收费，质量不如网页版\n")
+		buffer.WriteString("缺点：收费，效果接近网页版\n")
 		buffer.WriteString("其他：当网页版被限流时使用\n")
 	} else {
 		buffer.WriteString("接入方式：ChatGPT Browser接入\n")

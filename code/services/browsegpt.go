@@ -45,15 +45,16 @@ func HttpPostJson(msg, lastReply string) (string, string, error) {
 	jsonStr := reqData
 	url := "http://localhost:8080/api/v1/ask"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		return "", "", err
+	}
 	req.Header.Set("Content-Type", "application/json")
-
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", "", err
 	}
 	defer resp.Body.Close()
-
 	body, _ := ioutil.ReadAll(resp.Body)
 	gptReplyBody := &ChatGPTBrowseReplyBody{}
 	log.Println(string(body))
@@ -79,7 +80,3 @@ func HttpPostJson(msg, lastReply string) (string, string, error) {
 	log.Printf("\nAsk:%s\nGPTBrowserGPT Reply:\n%s\n ", reqBody.Message, reply)
 	return reply, string(body), nil
 }
-
-// func FormatQuestion(question string) string {
-// 	return "Answer:" + question
-// }

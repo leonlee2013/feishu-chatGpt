@@ -79,8 +79,9 @@ func (p GroupMessageHandler) handle(ctx context.Context, event *larkim.P2Message
 	prompt := p.userCache.Get(*openId)
 
 	if services.IsAPIKey() {
-		prompt = fmt.Sprintf("%s\nQ:%s\nA:", prompt, qParsed)
-		completions, err := services.Completions(prompt)
+		// prompt = fmt.Sprintf("%s\nQ:%s\nA:", prompt, qParsed)
+		// completions, err := services.Completions(prompt)
+		completions, err := services.Chat(prompt, qParsed)
 		if err != nil {
 			replyErrorMsg(ctx, err, msgId)
 			return nil
