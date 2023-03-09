@@ -33,7 +33,7 @@ func (u UserService) Set(userId string, question, reply string) {
 	//如果满了，删除最早的一个
 	//如果没有满，直接添加
 	maxCache := 8
-	maxLength := 2048
+	maxLength := 3000
 	maxCacheTime := time.Minute * 30
 	listOut := make([]string, maxCache)
 	value := fmt.Sprintf("Q:%s\nA:%s\n\n", question, reply)

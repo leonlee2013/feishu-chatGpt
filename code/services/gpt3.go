@@ -224,7 +224,8 @@ func Chat(msg, ask string) (string, error) {
 	}
 	defer response.Body.Close()
 	if response.StatusCode/2 != 100 {
-		return "", fmt.Errorf("gtp api %s", response.Status)
+		log.Printf("response======> %v", response)
+		return "", fmt.Errorf("gpt-3.5-turbo api %s", response.Status)
 	}
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
@@ -281,7 +282,7 @@ func Images(msg string) ([]string, error) {
 	defer response.Body.Close()
 	if response.StatusCode/2 != 100 {
 		fmt.Printf("response = %#v\n", response)
-		return nil, fmt.Errorf("gtp api %s", response.Status)
+		return nil, fmt.Errorf("gpt api %s", response.Status)
 	}
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
