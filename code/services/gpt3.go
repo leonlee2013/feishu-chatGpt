@@ -70,7 +70,7 @@ func (gpt ChatGPT) sendRequest(url, method string, requestBody interface{}, resp
 	if err != nil {
 		return err
 	}
-
+	fmt.Printf("requestBody: %#v\n", string(requestData))
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(requestData))
 	if err != nil {
 		return err
@@ -85,6 +85,7 @@ func (gpt ChatGPT) sendRequest(url, method string, requestBody interface{}, resp
 	}
 	defer response.Body.Close()
 	if response.StatusCode/2 != 100 {
+		fmt.Printf("error response = %#v\n", response)
 		return fmt.Errorf("%s api %s", strings.ToUpper(method), response.Status)
 	}
 	body, err := ioutil.ReadAll(response.Body)

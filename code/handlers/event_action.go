@@ -3,9 +3,10 @@ package handlers
 import (
 	"context"
 	"fmt"
-	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
 	"start-feishubot/services"
 	"start-feishubot/utils"
+
+	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
 )
 
 type MsgInfo struct {
@@ -118,7 +119,7 @@ type PicAction struct { /*图片*/
 func (*PicAction) Execute(a *ActionInfo) bool {
 	// 开启图片创作模式
 	if _, foundPic := utils.EitherTrimEqual(a.info.qParsed,
-		"/picture", "图片创作"); foundPic {
+		"/draw", "画图"); foundPic {
 		a.handler.sessionCache.Clear(*a.info.sessionId)
 		a.handler.sessionCache.SetMode(*a.info.sessionId,
 			services.ModePicCreate)
@@ -160,6 +161,7 @@ func (*MessageAction) Execute(a *ActionInfo) bool {
 		Role: "user", Content: a.info.qParsed,
 	})
 	completions, err := a.handler.gpt.Completions(msg)
+	fmt.Printf("reply  %#v\n", completions)
 	if err != nil {
 		replyMsg(*a.ctx, fmt.Sprintf(
 			"🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), a.info.msgId)

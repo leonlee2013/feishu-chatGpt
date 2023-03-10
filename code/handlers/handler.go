@@ -13,7 +13,7 @@ import (
 	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
 )
 
-//责任链
+// 责任链
 func chain(data *ActionInfo, actions ...Action) bool {
 	for _, v := range actions {
 		if !v.Execute(data) {
@@ -117,8 +117,20 @@ func (m MessageHandler) msgReceivedHandler(ctx context.Context, event *larkim.P2
 	rootId := event.Event.Message.RootId
 	chatId := event.Event.Message.ChatId
 	mention := event.Event.Message.Mentions
-
 	sessionId := rootId
+
+	// debugPrint("rootId", rootId)
+	// debugPrint("chatId", chatId)
+	// debugPrint("content", content)
+	// for _, v := range mention {
+	// 	fmt.Printf("v.Key = %+v\n", *v.Key)
+	// 	if v.Id != nil {
+	// 		fmt.Printf("*v.id = %#v\n", *v.Id)
+	// 	}
+	// 	fmt.Printf("v.Name = %+v\n", *v.Name)
+	// 	fmt.Printf("v.TenantKey= %+v\n", *v.TenantKey)
+	// }
+
 	if sessionId == nil || *sessionId == "" {
 		sessionId = msgId
 	}
@@ -169,4 +181,10 @@ func (m MessageHandler) judgeIfMentionMe(mention []*larkim.
 		return false
 	}
 	return *mention[0].Name == m.config.FeishuBotName
+}
+
+func debugPrint(info string, value *string) {
+	if value != nil {
+		fmt.Printf("%s = %#v\n", info, *value)
+	}
 }
