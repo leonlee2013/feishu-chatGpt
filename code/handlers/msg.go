@@ -501,7 +501,7 @@ func sendSystemInstructionCard(ctx context.Context,
 func sendPicCreateInstructionCard(ctx context.Context,
 	sessionId *string, msgId *string) {
 	newCard, _ := newSendCard(
-		withHeader("🖼️ 已进入图片创作模式", larkcard.TemplateBlue),
+		withHeader("🖼️ 已进入DALL·E画图模式", larkcard.TemplateBlue),
 		withPicResolutionBtn(sessionId, msgId),
 		withNote("提醒：在对话框中发送文本或图片，让AI生成相关的图片。"))
 	replyCard(
@@ -539,9 +539,9 @@ func sendHelpCard(ctx context.Context,
 				"sessionId": *sessionId,
 			}, larkcard.MessageCardButtonTypeDanger)),
 		withSplitLine(),
-		withMainMd("**🎓 开启角色扮演模式**\n文本回复*角色扮演* 或 */system*+空格+角色信息"),
+		withMainMd("**🎓 开启角色扮演模式**\n文本回复 *角色扮演* 或 */system*+空格+角色信息"),
 		withSplitLine(),
-		withMainMd("**🖼️ 图片创作** (试用)\n"+
+		withMainMd("**🖼️ DALL·E画图** (试用)\n"+
 			" 文本回复 *画图* 或 */draw*"),
 		withSplitLine(),
 		// withMainMd("**📮 常用角色管理** 🚧\n"+
