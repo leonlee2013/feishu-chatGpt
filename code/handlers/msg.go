@@ -541,9 +541,9 @@ func sendHelpCard(ctx context.Context,
 		withSplitLine(),
 		withMainMd("**🎓 开启角色扮演模式**\n文本回复 *角色扮演* 或 */system*+空格+角色信息"),
 		withSplitLine(),
-		withMainMd("**🖼️ DALL·E画图** (试用)\n"+
-			" 文本回复 *画图* 或 */draw*"),
-		withSplitLine(),
+		// withMainMd("**🖼️ DALL·E画图** (试用)\n"+
+		// 	" 文本回复 *画图* 或 */draw*"),
+		// withSplitLine(),
 		// withMainMd("**📮 常用角色管理** 🚧\n"+
 		// 	" 文本回复 *角色管理* 或 */manage*"),
 		// withSplitLine(),
