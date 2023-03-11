@@ -52,6 +52,14 @@ func (m MessageHandler) cardHandler(_ context.Context,
 			m.CommonProcessPicMore(cardMsg)
 		}()
 	}
+	if cardMsg.Kind == ChatGuideKind {
+		CommonProcessChatGuild(cardMsg, cardAction, m.sessionCache)
+		return nil, nil
+	}
+	if cardMsg.Kind == SelectGuideKind {
+		CommonProcessSelectGuide(cardMsg, cardAction, m.sessionCache)
+		return nil, nil
+	}
 
 	return nil, nil
 
@@ -76,6 +84,39 @@ func CommonProcessPicResolution(msg CardMsg,
 	//send text
 	replyMsg(context.Background(), "已更新图片分辨率为"+option,
 		&msg.MsgId)
+}
+
+func CommonProcessSelectGuide(msg CardMsg,
+	cardAction *larkcard.CardAction,
+	cache services.SessionServiceCacheInterface) {
+	option := cardAction.Action.Option
+	// tag := cardAction.Action.Tag
+	// value := cardAction.Action.Value
+	// larkcore.Prettify(msg)
+	// fmt.Println(larkcore.Prettify(msg))
+	// fmt.Println(larkcore.Prettify(cardAction))
+	// fmt.Printf("option = %#v\n", option)
+	// fmt.Printf("tag = %#v\n", tag)
+	// fmt.Printf("value = %#v\n", value)
+	//send text
+	// replyMsg(context.Background(), option, &msg.MsgId)
+	guideInfo := &GuideInfo{}
+	json.Unmarshal([]byte(option), guideInfo)
+	newCard, _ := newSimpleSendCard(
+		withMainMd(fmt.Sprintf("**%s:**\n%s", guideInfo.Title, guideInfo.Info)),
+	)
+	replyCard(context.Background(), &msg.SessionId, newCard)
+}
+
+func CommonProcessChatGuild(msg CardMsg,
+	cardAction *larkcard.CardAction,
+	cache services.SessionServiceCacheInterface) {
+	fmt.Printf("value = %#v\n", cardAction.Action.Value)
+	newCard, _ := newSendCard(
+		withHeader("调教指南", larkcard.TemplateBlue),
+		withChatGuideBtn(&msg.SessionId, &msg.SessionId),
+		withNote("输入文本 *角色扮演* 或 */system* +空格+角色信息, 以开启角色扮演模式*"))
+	replyCard(context.Background(), &msg.SessionId, newCard)
 }
 
 func CommonProcessClearCache(cardMsg CardMsg, session services.SessionServiceCacheInterface) (

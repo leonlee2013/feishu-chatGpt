@@ -20,6 +20,8 @@ var (
 	ClearCardKind     = CardKind("clear")          // 清空上下文
 	PicResolutionKind = CardKind("pic_resolution") // 图片分辨率调整
 	PicMoreKind       = CardKind("pic_more")       // 重新生成图片
+	ChatGuideKind     = CardKind("chat_guide")     // 调教指南
+	SelectGuideKind   = CardKind("select_guide")   // 选择选项
 )
 
 var (
@@ -322,6 +324,29 @@ func withPicResolutionBtn(sessionID *string, msgID *string) larkcard.
 
 }
 
+// 新建调教指南
+func withChatGuideBtn(sessionID *string, msgID *string) larkcard.
+	MessageCardElement {
+	// options := []MenuOption
+	cancelMenu := newMenu("调教指南",
+		map[string]interface{}{
+			"value":     "0",
+			"kind":      SelectGuideKind,
+			"sessionId": *sessionID,
+			"msgId":     *sessionID,
+		},
+		guideOptions...,
+	)
+
+	actions := larkcard.NewMessageCardAction().
+		Actions([]larkcard.MessageCardActionElement{cancelMenu}).
+		Layout(larkcard.MessageCardActionLayoutFlow.Ptr()).
+		Build()
+
+	return actions
+
+}
+
 func replyMsg(ctx context.Context, msg string, msgId *string) error {
 	fmt.Println("sendMsg", msg, msgId)
 	msg, i := processMessage(msg)
@@ -514,9 +539,9 @@ func sendPicCreateInstructionCard(ctx context.Context,
 func sendNewTopicCard(ctx context.Context,
 	sessionId *string, msgId *string, content string) {
 	newCard, _ := newSendCard(
-		withHeader("💬 开启新话题", larkcard.TemplateBlue),
+		withHeader("💬 开启新聊天", larkcard.TemplateBlue),
 		withMainText(content),
-		withNote("提醒：点击对话框参与回复，可保持话题连贯"))
+		withNote("提醒：回复此消息或其子消息，可保留聊天上下文"))
 	replyCard(
 		ctx,
 		msgId,
@@ -531,7 +556,7 @@ func sendHelpCard(ctx context.Context,
 		withMainMd("**我是基于gpt-3.5-turbo模型的聊天机器人！**"),
 		withSplitLine(),
 		withMdAndExtraBtn(
-			"** 🆑 清除话题上下文**\n文本回复 *清除* 或 */clear*",
+			"** 🆑 清除上下文**\n文本回复 *清除* 或 */clear*",
 			newBtn("立刻清除", map[string]interface{}{
 				"value":     "1",
 				"kind":      ClearCardKind,
@@ -539,7 +564,15 @@ func sendHelpCard(ctx context.Context,
 				"sessionId": *sessionId,
 			}, larkcard.MessageCardButtonTypeDanger)),
 		withSplitLine(),
-		withMainMd("**🎓 开启角色扮演模式**\n文本回复 *角色扮演* 或 */system*+空格+角色信息"),
+		// withMainMd("**🎓 开启角色扮演模式**\n文本回复 *角色扮演* 或 */system*+空格+角色信息"),
+		withMdAndExtraBtn(
+			"**🎓 开启角色扮演模式**\n输入文本 *角色扮演* 或 */system* +空格+角色信息",
+			newBtn("调教指南", map[string]interface{}{
+				"value":     "1",
+				"kind":      ChatGuideKind,
+				"chatType":  UserChatType,
+				"sessionId": *sessionId,
+			}, larkcard.MessageCardButtonTypeDefault)),
 		withSplitLine(),
 		// withMainMd("**🖼️ DALL·E画图** (试用)\n"+
 		// 	" 文本回复 *画图* 或 */draw*"),
@@ -553,8 +586,8 @@ func sendHelpCard(ctx context.Context,
 		// withMainMd("**📤 话题内容导出** 🚧\n"+
 		// 	" 文本回复 *导出* 或 */export*"),
 		// withSplitLine(),
-		withMainMd("**🎰 连续对话与多话题模式**\n"+
-			" 点击对话框参与回复，可保持话题连贯。同时，单独提问即可开启全新新话题"),
+		withMainMd("**🎰 连续对话**\n"+
+			"回复消息，可保持聊天上下文。单独提问即可开启新的聊天"),
 		withSplitLine(),
 		withMainMd("**📚 帮助**\n文本回复 *帮助* 或 */help*"),
 	)
