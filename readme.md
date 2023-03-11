@@ -47,6 +47,12 @@
 
 🔒 管理员模式：内置管理员模式，使用更安全可靠 🚧
 
+🌐 多token负载均衡：优化生产级别的高频调用场景
+
+↩️ 支持反向代理：方便国内用户访问
+
+📚 与飞书文档互动：成为企业员工的超级助手 🚧
+
 
 ## 🌟 项目特点
 
@@ -206,10 +212,16 @@ docker run -d --name feishu-chatgpt -p 9000:9000 \
 --env APP_ENCRYPT_KEY=xxx \
 --env APP_VERIFICATION_TOKEN=xxx \
 --env BOT_NAME=chatGpt \
---env OPENAI_KEY=sk-xxx \
+--env OPENAI_KEY="sk-xxx1,sk-xxx2,sk-xxx3" \
+--env API_URL="https://api.openai.com" \
+--env HTTP_PROXY="" \
 feishu-chatgpt:latest
 ```
-
+注意:
+- `BOT_NAME` 为飞书机器人名称，例如 `chatGpt`
+- `OPENAI_KEY` 为openai key，多个key用逗号分隔，例如 `sk-xxx1,sk-xxx2,sk-xxx3`
+- `HTTP_PROXY` 为宿主机的proxy地址，例如 `http://host.docker.internal:7890`
+- `API_URL` 为openai api 接口地址，例如 `https://api.openai.com`, 没有反向代理的话，可以不用设置
 ---
 
 小白简易化 docker 部署
@@ -223,7 +235,9 @@ docker run -d --restart=always --name feishu-chatgpt2 -p 9000:9000 -v /etc/local
 --env APP_ENCRYPT_KEY=xxx \
 --env APP_VERIFICATION_TOKEN=xxx \
 --env BOT_NAME=chatGpt \
---env OPENAI_KEY=sk-xxx \
+--env OPENAI_KEY="sk-xxx1,sk-xxx2,sk-xxx3" \
+--env API_URL=https://api.openai.com \
+--env HTTP_PROXY="" \
 dockerproxy.com/leizhenpeng/feishu-chatgpt:latest
 ```
 
@@ -303,19 +317,17 @@ dockerproxy.com/leizhenpeng/feishu-chatgpt:latest
 
 ## 更多交流
 
-企业如需定制部署，可联系 WeChat: `laolei_forkway`，支持发票~
+如需协助部署，或者其他定制服务，可联系下面的WeChat，支持发票~
 
-遇到其他问题，可以加入飞书群沟通~
+遇到问题，可以加入飞书群沟通~
 
-<img src='./docs/talk.png' alt='' width='300'/>
+<img src='./docs/talk.png' alt='' width='200'/>
 
-## 赞助项目
+## 交朋友 或者 鼓励一下
 
 如果你觉得这个项目对你有帮助，可以请作者买本书~
 
+<img width="400" src="https://user-images.githubusercontent.com/50035229/224462896-28f7b2d5-f443-4cc2-9790-7b72e5c53f15.png">
+
 😚 谢谢你啦 😚
 
-<details>
-    <summary>赞赏二维码</summary>
-    <img width="400" src="https://user-images.githubusercontent.com/50035229/222702169-cec777f9-cb0c-4f6a-90e5-418959e668e5.png">
-</details>
