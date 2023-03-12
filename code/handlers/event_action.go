@@ -229,6 +229,17 @@ func (*AudioAction) Execute(a *ActionInfo) bool {
 			sendMsg(*a.ctx, "🤖️：语音转换失败，请稍后再试～", a.info.msgId)
 			return false
 		}
+		newCard, _ := newSimpleSendCard(
+			// withMainMd(fmt.Sprintf("**%s:**\n%s", guideInfo.Title, guideInfo.Info)),
+			withMainMd(fmt.Sprintf("**whisper语音转换:**\n%s", text)),
+		)
+		err = replyCard(*a.ctx, a.info.msgId, newCard)
+
+		if err != nil {
+			replyMsg(*a.ctx, fmt.Sprintf(
+				"🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), a.info.msgId)
+			return false
+		}
 		//删除文件
 		fmt.Println("text: ", text)
 		a.info.qParsed = text

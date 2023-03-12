@@ -539,9 +539,9 @@ func sendPicCreateInstructionCard(ctx context.Context,
 func sendNewTopicCard(ctx context.Context,
 	sessionId *string, msgId *string, content string) {
 	newCard, _ := newSendCard(
-		withHeader("💬 开启新聊天", larkcard.TemplateBlue),
+		withHeader("💬 开启新话题", larkcard.TemplateGreen),
 		withMainText(content),
-		withNote("提醒：回复此消息或其子消息，可保留聊天上下文"))
+		withNote("提醒：回复消息可保留上下文"))
 	replyCard(
 		ctx,
 		msgId,
@@ -586,8 +586,8 @@ func sendHelpCard(ctx context.Context,
 		// withMainMd("**📤 话题内容导出** 🚧\n"+
 		// 	" 文本回复 *导出* 或 */export*"),
 		// withSplitLine(),
-		withMainMd("**🎰 连续对话**\n"+
-			"回复消息，可保持聊天上下文。单独提问即可开启新的聊天"),
+		withMainMd("**🎰 连续对话(私聊支持语音)**\n"+
+			"回复消息，可保持上下文。单独提问即可开启新的话题"),
 		withSplitLine(),
 		withMainMd("**📚 帮助**\n文本回复 *帮助* 或 */help*"),
 	)
