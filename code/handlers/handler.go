@@ -114,9 +114,9 @@ func CommonProcessChatGuild(msg CardMsg,
 	cache services.SessionServiceCacheInterface) {
 	// fmt.Printf("value = %#v\n", cardAction.Action.Value)
 	newCard, _ := newSendCard(
-		withHeader("调教指南", larkcard.TemplateBlue),
+		withHeader("调教指南", larkcard.TemplateGreen),
 		withChatGuideBtn(&msg.SessionId, &msg.MsgId),
-		withMainMd("输入文本 *角色扮演* 或 */system* +空格+角色信息, 以开启角色扮演模式"))
+		withMainMd("输入  *角色扮演* 或 */system* +空格+角色信息, 以开启角色扮演模式"))
 	replyCard(context.Background(), &msg.MsgId, newCard)
 }
 

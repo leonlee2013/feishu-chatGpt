@@ -499,7 +499,7 @@ func sendMsg(ctx context.Context, msg string, chatId *string) error {
 func sendClearCacheCheckCard(ctx context.Context,
 	sessionId *string, msgId *string) {
 	newCard, _ := newSendCard(
-		withHeader("🆑 机器人提醒", larkcard.TemplateBlue),
+		withHeader("🆑 机器人提醒", larkcard.TemplateGreen),
 		withMainMd("您确定要清除对话上下文吗？"),
 		withNote("请注意，这将开始一个全新的对话，您将无法利用之前话题的历史信息"),
 		withDoubleCheckBtn(sessionId))
@@ -513,9 +513,9 @@ func sendClearCacheCheckCard(ctx context.Context,
 func sendSystemInstructionCard(ctx context.Context,
 	sessionId *string, msgId *string, content string) {
 	newCard, _ := newSendCard(
-		withHeader("🎓 进入角色扮演模式", larkcard.TemplateBlue),
+		withHeader("🎓 进入角色扮演模式", larkcard.TemplateTurquoise),
 		withMainText(content),
-		withNote("请注意，这将开始一个全新的对话，您将无法利用之前话题的历史信息"))
+		withNote("提醒：回复消息，继续角色扮演模式"))
 	replyCard(
 		ctx,
 		msgId,
@@ -526,7 +526,7 @@ func sendSystemInstructionCard(ctx context.Context,
 func sendPicCreateInstructionCard(ctx context.Context,
 	sessionId *string, msgId *string) {
 	newCard, _ := newSendCard(
-		withHeader("🖼️ 已进入DALL·E画图模式", larkcard.TemplateBlue),
+		withHeader("🖼️ 已进入DALL·E画图模式", larkcard.TemplateGreen),
 		withPicResolutionBtn(sessionId, msgId),
 		withNote("提醒：在对话框中发送文本或图片，让AI生成相关的图片。"))
 	replyCard(
@@ -539,7 +539,7 @@ func sendPicCreateInstructionCard(ctx context.Context,
 func sendNewTopicCard(ctx context.Context,
 	sessionId *string, msgId *string, content string) {
 	newCard, _ := newSendCard(
-		withHeader("💬 开启新话题", larkcard.TemplateGreen),
+		withHeader("💬 开启新话题", larkcard.TemplateBlue),
 		withMainText(content),
 		withNote("提醒：回复消息可保留上下文"))
 	replyCard(
@@ -552,11 +552,11 @@ func sendNewTopicCard(ctx context.Context,
 func sendHelpCard(ctx context.Context,
 	sessionId *string, msgId *string) {
 	newCard, _ := newSendCard(
-		withHeader("📚 需要帮助吗？", larkcard.TemplateBlue),
+		withHeader("📚 需要帮助吗？", larkcard.TemplateGreen),
 		withMainMd("**我是基于gpt-3.5-turbo模型的聊天机器人！**"),
 		withSplitLine(),
 		withMdAndExtraBtn(
-			"** 🆑 清除上下文**\n文本回复 *清除* 或 */clear*",
+			"** 🆑 清除上下文**\n回复 *清除* 或 */clear*",
 			newBtn("立刻清除", map[string]interface{}{
 				"value":     "1",
 				"kind":      ClearCardKind,
@@ -566,7 +566,7 @@ func sendHelpCard(ctx context.Context,
 		withSplitLine(),
 		// withMainMd("**🎓 开启角色扮演模式**\n文本回复 *角色扮演* 或 */system*+空格+角色信息"),
 		withMdAndExtraBtn(
-			"**🎓 开启角色扮演模式**\n输入文本 *角色扮演* 或 */system* +空格+角色信息",
+			"**🎓 开启角色扮演模式**\n输入 *角色扮演* 或 */system* +空格+角色信息",
 			newBtn("调教指南", map[string]interface{}{
 				"value":     "1",
 				"kind":      ChatGuideKind,
@@ -574,6 +574,8 @@ func sendHelpCard(ctx context.Context,
 				"msgId":     *msgId,
 				"sessionId": *sessionId,
 			}, larkcard.MessageCardButtonTypeDefault)),
+		withSplitLine(),
+		withMainMd("🎤 **AI语音对话**\n私聊模式下直接发送语音"),
 		withSplitLine(),
 		// withMainMd("**🖼️ DALL·E画图** (试用)\n"+
 		// 	" 文本回复 *画图* 或 */draw*"),
@@ -587,10 +589,10 @@ func sendHelpCard(ctx context.Context,
 		// withMainMd("**📤 话题内容导出** 🚧\n"+
 		// 	" 文本回复 *导出* 或 */export*"),
 		// withSplitLine(),
-		withMainMd("**🎰 连续对话(私聊支持语音)**\n"+
+		withMainMd("**🎰 连续对话**\n"+
 			"回复消息，可保持上下文。单独提问即可开启新的话题"),
 		withSplitLine(),
-		withMainMd("**📚 帮助**\n文本回复 *帮助* 或 */help*"),
+		withMainMd("**📚 帮助**\n回复 *帮助* 或 */help*"),
 	)
 	replyCard(
 		ctx,
