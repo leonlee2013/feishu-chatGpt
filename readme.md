@@ -6,6 +6,7 @@
     <summary> 📷 点击展开完整功能截图</summary>
     <br>
     <p align='center'>
+    <img src='https://user-images.githubusercontent.com/50035229/224493411-085ba405-81cd-4972-b87b-74a2e811f23d.png' alt='' width='800'/>
     <img src='https://user-images.githubusercontent.com/50035229/223590381-ed38db74-39f3-4e77-bd3a-aaa54d679286.png' alt='' width='800'/>
     <img src='https://user-images.githubusercontent.com/50035229/223590817-37a56eac-ab6e-4293-862a-de0988ac50b7.png' alt='' width='800'/>
     <img src='https://user-images.githubusercontent.com/50035229/223591272-88e4218c-5cb6-4925-8ede-18359bdf9097.png' alt='' width='800'/>
@@ -25,7 +26,7 @@
 
 ## 👻 机器人功能
 
-🗣 语音交流：直接与机器人畅所欲言 🚧
+🗣 语音交流：私人直接与机器人畅所欲言 
 
 💬 多话题对话：支持私人和群聊多话题讨论，高效连贯
 
@@ -52,6 +53,8 @@
 ↩️ 支持反向代理：方便国内用户访问
 
 📚 与飞书文档互动：成为企业员工的超级助手 🚧
+
+🎥 话题内容秒转PPT：周报生产力MAX 🚧
 
 
 ## 🌟 项目特点
