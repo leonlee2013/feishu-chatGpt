@@ -34,9 +34,10 @@ func (m MessageHandler) cardHandler(_ context.Context,
 	cardAction *larkcard.CardAction) (interface{}, error) {
 	var cardMsg CardMsg
 	actionValue := cardAction.Action.Value
-	fmt.Printf("actionValue = %#v\n", actionValue)
+	// fmt.Printf("actionValue = %#v\n", actionValue)
 	actionValueJson, _ := json.Marshal(actionValue)
 	json.Unmarshal(actionValueJson, &cardMsg)
+	// fmt.Printf("cardMsg = %#v\n", cardMsg)
 	if cardMsg.Kind == ClearCardKind {
 		newCard, err, done := CommonProcessClearCache(cardMsg, m.sessionCache)
 		if done {
@@ -94,7 +95,7 @@ func CommonProcessSelectGuide(msg CardMsg,
 	detail := guideMap[option]
 	// tag := cardAction.Action.Tag
 	// value := cardAction.Action.Value
-	// larkcore.Prettify(msg)
+	// larkcard.Prettify(msg)
 	// fmt.Println(larkcore.Prettify(msg))
 	// fmt.Println(larkcore.Prettify(cardAction))
 	// fmt.Printf("option = %#v\n", option)
@@ -105,18 +106,18 @@ func CommonProcessSelectGuide(msg CardMsg,
 	newCard, _ := newSimpleSendCard(
 		withMainMd(fmt.Sprintf("**%s:**\n%s", option, detail)),
 	)
-	replyCard(context.Background(), &msg.SessionId, newCard)
+	replyCard(context.Background(), &msg.MsgId, newCard)
 }
 
 func CommonProcessChatGuild(msg CardMsg,
 	cardAction *larkcard.CardAction,
 	cache services.SessionServiceCacheInterface) {
-	fmt.Printf("value = %#v\n", cardAction.Action.Value)
+	// fmt.Printf("value = %#v\n", cardAction.Action.Value)
 	newCard, _ := newSendCard(
 		withHeader("调教指南", larkcard.TemplateBlue),
-		withChatGuideBtn(&msg.SessionId, &msg.SessionId),
+		withChatGuideBtn(&msg.SessionId, &msg.MsgId),
 		withMainMd("输入文本 *角色扮演* 或 */system* +空格+角色信息, 以开启角色扮演模式"))
-	replyCard(context.Background(), &msg.SessionId, newCard)
+	replyCard(context.Background(), &msg.MsgId, newCard)
 }
 
 func CommonProcessClearCache(cardMsg CardMsg, session services.SessionServiceCacheInterface) (
