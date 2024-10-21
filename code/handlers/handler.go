@@ -38,6 +38,7 @@ func (m MessageHandler) cardHandler(_ context.Context,
 	actionValueJson, _ := json.Marshal(actionValue)
 	json.Unmarshal(actionValueJson, &cardMsg)
 	// fmt.Printf("cardMsg = %#v\n", cardMsg)
+	fmt.Printf("cardMsg.Kind = %#v msgId = %v \n", cardMsg.Kind, cardMsg.MsgId)
 	if cardMsg.Kind == ClearCardKind {
 		newCard, err, done := CommonProcessClearCache(cardMsg, m.sessionCache)
 		if done {
@@ -55,7 +56,7 @@ func (m MessageHandler) cardHandler(_ context.Context,
 		}()
 	}
 	if cardMsg.Kind == ChatGuideKind {
-		CommonProcessChatGuild(cardMsg, cardAction, m.sessionCache)
+		CommonProcessChatGuide(cardMsg, cardAction, m.sessionCache)
 		return nil, nil
 	}
 	if cardMsg.Kind == SelectGuideKind {
@@ -92,6 +93,7 @@ func CommonProcessSelectGuide(msg CardMsg,
 	cardAction *larkcard.CardAction,
 	cache services.SessionServiceCacheInterface) {
 	option := cardAction.Action.Option
+	fmt.Printf("option selected = %#v\n", option)
 	detail := guideMap[option]
 	// tag := cardAction.Action.Tag
 	// value := cardAction.Action.Value
@@ -109,7 +111,7 @@ func CommonProcessSelectGuide(msg CardMsg,
 	replyCard(context.Background(), &msg.MsgId, newCard)
 }
 
-func CommonProcessChatGuild(msg CardMsg,
+func CommonProcessChatGuide(msg CardMsg,
 	cardAction *larkcard.CardAction,
 	cache services.SessionServiceCacheInterface) {
 	// fmt.Printf("value = %#v\n", cardAction.Action.Value)

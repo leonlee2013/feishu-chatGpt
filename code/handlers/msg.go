@@ -327,7 +327,6 @@ func withPicResolutionBtn(sessionID *string, msgID *string) larkcard.
 // 新建调教指南
 func withChatGuideBtn(sessionID *string, msgID *string) larkcard.
 	MessageCardElement {
-	// options := []MenuOption
 	cancelMenu := newMenu("调教指南",
 		map[string]interface{}{
 			"value":     "0",
@@ -553,7 +552,8 @@ func sendHelpCard(ctx context.Context,
 	sessionId *string, msgId *string) {
 	newCard, _ := newSendCard(
 		withHeader("📚 需要帮助吗？", larkcard.TemplateGreen),
-		withMainMd("**我是基于gpt-3.5-turbo模型的聊天机器人！**"),
+		// withMainMd("**我是基于gpt-3.5-turbo模型的聊天机器人！**"),
+		withMainMd("**我是基于gpt-4o模型的聊天机器人！**"),
 		withSplitLine(),
 		withMdAndExtraBtn(
 			"** 🆑 清除上下文**\n回复 *清除* 或 */clear*",
@@ -573,7 +573,7 @@ func sendHelpCard(ctx context.Context,
 				"chatType":  UserChatType,
 				"msgId":     *msgId,
 				"sessionId": *sessionId,
-			}, larkcard.MessageCardButtonTypeDefault)),
+			}, larkcard.MessageCardButtonTypePrimary)),
 		withSplitLine(),
 		withMainMd("🎤 **AI语音对话**\n私聊模式下直接发送语音"),
 		withSplitLine(),

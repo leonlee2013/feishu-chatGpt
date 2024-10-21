@@ -18,9 +18,10 @@ import (
 )
 
 const (
-	maxTokens   = 2000
+	maxTokens   = 3000
 	temperature = 0.7
-	engine      = "gpt-3.5-turbo"
+	// engine      = "gpt-3.5-turbo"
+	engine = "gpt-4o"
 )
 
 type Messages struct {
@@ -142,8 +143,9 @@ func (gpt ChatGPT) doAPIRequestWithRetry(url, method string, bodyType requestBod
 	var retry int
 	for retry = 0; retry <= maxRetries; retry++ {
 		response, err = client.Do(req)
-		//fmt.Println("req", req)
-		//fmt.Println("response", response, "err", err)
+		// fmt.Println("req", req)
+		// fmt.Println("response", response, "err", err)
+		// fmt.Printf("response222: %#v\n", response)
 		if err != nil || response.StatusCode < 200 || response.StatusCode >= 300 {
 			gpt.Lb.SetAvailability(api.Key, false)
 			if retry == maxRetries {
@@ -224,6 +226,8 @@ func (gpt ChatGPT) Completions(msg []Messages) (resp Messages, err error) {
 		resp = Messages{}
 		err = errors.New("openai 请求失败")
 	}
+	//fmt.Printf("gptResponseBody = %+v\n", gptResponseBody)
+	// fmt.Printf("gptResponseBody-->: %#v\n", gptResponseBody)
 	return resp, err
 }
 
