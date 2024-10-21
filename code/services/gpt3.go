@@ -20,8 +20,9 @@ import (
 const (
 	maxTokens   = 3000
 	temperature = 0.7
-	// engine      = "gpt-3.5-turbo"
-	engine = "gpt-4o"
+	//engine      = "gpt-3.5-turbo"
+	//engine = "gpt-4o"
+	engine = ""
 )
 
 type Messages struct {
@@ -137,8 +138,7 @@ func (gpt ChatGPT) doAPIRequestWithRetry(url, method string, bodyType requestBod
 	if bodyType == formDataBody {
 		req.Header.Set("Content-Type", writer.FormDataContentType())
 	}
-	req.Header.Set("Authorization", "Bearer "+api.Key)
-
+	req.Header.Set("api-key", api.Key)
 	var response *http.Response
 	var retry int
 	for retry = 0; retry <= maxRetries; retry++ {
@@ -207,7 +207,7 @@ func (gpt ChatGPT) sendRequestWithBodyType(link, method string, bodyType request
 
 func (gpt ChatGPT) Completions(msg []Messages) (resp Messages, err error) {
 	requestBody := ChatGPTRequestBody{
-		Model:            engine,
+		//Model:            engine,
 		Messages:         msg,
 		MaxTokens:        maxTokens,
 		Temperature:      temperature,
@@ -216,7 +216,8 @@ func (gpt ChatGPT) Completions(msg []Messages) (resp Messages, err error) {
 		PresencePenalty:  0,
 	}
 	gptResponseBody := &ChatGPTResponseBody{}
-	err = gpt.sendRequestWithBodyType(gpt.ApiUrl+"/v1/chat/completions", "POST",
+	//err = gpt.sendRequestWithBodyType(gpt.ApiUrl+"/v1/chat/completions", "POST",
+	err = gpt.sendRequestWithBodyType(gpt.ApiUrl, "POST",
 		jsonBody,
 		requestBody, gptResponseBody)
 

@@ -553,7 +553,7 @@ func sendHelpCard(ctx context.Context,
 	newCard, _ := newSendCard(
 		withHeader("📚 需要帮助吗？", larkcard.TemplateGreen),
 		// withMainMd("**我是基于gpt-3.5-turbo模型的聊天机器人！**"),
-		withMainMd("**我是基于gpt-4o模型的聊天机器人！**"),
+		withMainMd("**我是基于lilith-sdk-gpt4o模型的聊天机器人！**"),
 		withSplitLine(),
 		withMdAndExtraBtn(
 			"** 🆑 清除上下文**\n回复 *清除* 或 */clear*",
