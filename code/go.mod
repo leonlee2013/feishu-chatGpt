@@ -2,11 +2,11 @@ module start-feishubot
 
 go 1.18
 
-require github.com/larksuite/oapi-sdk-go/v3 v3.0.14
+require github.com/larksuite/oapi-sdk-go/v3 v3.3.5
 
 require (
 	github.com/duke-git/lancet/v2 v2.1.17
-	github.com/gin-gonic/gin v1.8.2
+	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.3.0
 	github.com/larksuite/oapi-sdk-gin v1.0.0
 	github.com/pandodao/tokenizer-go v0.2.0
@@ -30,7 +30,9 @@ require (
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/goccy/go-json v0.10.0 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/pprof v0.0.0-20230309165930-d61513b1440d // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect

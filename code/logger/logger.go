@@ -2,16 +2,44 @@ package logger
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"runtime"
 	"strings"
 )
 
+// https://github.com/sirupsen/logrus
 var logger = logrus.New()
 
-func init() {
+func Log() *logrus.Logger {
+	return logger
+}
 
-	logger.SetFormatter(&formatter{})
+func WithField(key string, value interface{}) *logrus.Entry {
+	return logger.WithField(key, value)
+}
+
+//logrus.WithFields(logrus.Fields{
+//"animal": "walrus",
+//}).Info("A walrus appears")
+
+func init() {
+	format := new(logrus.TextFormatter)
+	format.CallerPrettyfier = func(f *runtime.Frame) (string, string) {
+		file := f.File
+		// 将文件名从完整路径中提取
+		shortFileName := file
+		if idx := strings.LastIndex(file, "/"); idx != -1 {
+			shortFileName = file[idx+1:]
+		}
+		funcVal := fmt.Sprintf("%s()", f.Function)
+		fileVal := fmt.Sprintf("%s:%d", shortFileName, f.Line)
+		return funcVal, fileVal
+
+	}
+	//logger.SetFormatter(&formatter{})
+	logger.SetFormatter(format)
 
 	logger.SetReportCaller(true)
 
@@ -24,7 +52,8 @@ func init() {
 	//WarnLevel
 	//InfoLevel
 	//DebugLevel
-	logger.Level = logrus.InfoLevel
+	//logger.Level = logrus.InfoLevel
+	logger.Level = logrus.DebugLevel
 
 }
 
@@ -120,3 +149,36 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 
 	return sb.Bytes(), nil
 }
+
+//func WithFields(fields logrus.Fields) {
+//
+//}
+
+//logrus.WithFields(logrus.Fields{
+//"animal": "walrus",
+//}).Info("A walrus appears")
+//
+//logrus.WithFields(logrus.Fields{
+//"animal": "walrus",
+//"size":   10,
+//}).Info("A group of walrus emerges from the ocean")
+//
+//logrus.WithFields(logrus.Fields{
+//"omg":    true,
+//"number": 122,
+//}).Warn("The group's number increased tremendously!")
+//
+//// A common pattern is to re-use fields between logrusging statements by re-using
+//// the logrusrus.Entry returned from WithFields()
+//contextLogger := logrus.WithFields(logrus.Fields{
+//"common": "this is a common field",
+//"other":  "I also should be logrusged always",
+//})
+//
+//contextLogger.Info("I'll be logrusged with common and other field")
+//contextLogger.Info("Me too")
+//
+//logrus.WithFields(logrus.Fields{
+//"omg":    true,
+//"number": 100,
+//}).Fatal("The ice breaks!")
