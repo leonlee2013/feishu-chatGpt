@@ -77,8 +77,12 @@ func clientStart(config *initialization.Config) {
 	// 注册事件回调，OnP2MessageReceiveV1 为接收消息 v2.0；OnCustomizedEvent 内的 message 为接收消息 v1.0。
 	eventHandler := dispatcher.NewEventDispatcher("", "").
 		OnP2MessageReceiveV1(handlers.Handler).
+		OnP2MessageRecalledV1(func(ctx context.Context, event *larkim.P2MessageRecalledV1) error {
+			logger.WithField("req", event.RequestURI).Info("P2MessageRecalledV1 from_websocket=============>>>")
+			return nil
+		}).
 		OnP2MessageReadV1(func(ctx context.Context, event *larkim.P2MessageReadV1) error {
-			logger.WithField("req", event.RequestURI).Info("from_websocket=============>>>")
+			logger.WithField("req", event.RequestURI).Info("P2MessageReadV1 from_websocket=============>>>")
 			return handlers.ReadHandler(ctx, event)
 		}).
 		OnCustomizedEvent("这里填入你要自定义订阅的 event 的 key，例如 out_approval", func(ctx context.Context, event *larkevent.EventReq) error {

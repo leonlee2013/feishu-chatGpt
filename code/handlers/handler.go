@@ -56,7 +56,7 @@ func (m MessageHandler) msgReceivedHandler(ctx context.Context, event *larkim.P2
 		fmt.Println("unknown chat type")
 		return nil
 	}
-	logger.Debug("收到消息：", larkcore.Prettify(event.Event.Message))
+	logger.Log().Debug("收到消息：", larkcore.Prettify(event.Event.Message))
 
 	msgType, err := judgeMsgType(event)
 	if err != nil {
